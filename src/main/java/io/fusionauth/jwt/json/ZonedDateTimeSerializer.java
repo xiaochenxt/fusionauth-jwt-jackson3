@@ -16,11 +16,11 @@
 
 package io.fusionauth.jwt.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.std.StdScalarSerializer;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 
 /**
@@ -34,7 +34,7 @@ public class ZonedDateTimeSerializer extends StdScalarSerializer<ZonedDateTime> 
   }
 
   @Override
-  public void serialize(ZonedDateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+  public void serialize(ZonedDateTime value, JsonGenerator jgen, SerializationContext provider) throws JacksonException {
     if (value == null) {
       jgen.writeNull();
     } else {

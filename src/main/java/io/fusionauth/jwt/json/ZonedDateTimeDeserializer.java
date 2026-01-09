@@ -16,12 +16,12 @@
 
 package io.fusionauth.jwt.json;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdScalarDeserializer;
+import tools.jackson.databind.exc.InvalidFormatException;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -37,26 +37,24 @@ public class ZonedDateTimeDeserializer extends StdScalarDeserializer<ZonedDateTi
   }
 
   @Override
-  public ZonedDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-    JsonToken t = jp.getCurrentToken();
+  public ZonedDateTime deserialize(JsonParser jp, DeserializationContext ctxt) {
+    JsonToken t = jp.currentToken();
     long value;
     if (t == JsonToken.VALUE_NUMBER_INT || t == JsonToken.VALUE_NUMBER_FLOAT) {
       value = jp.getLongValue();
     } else if (t == JsonToken.VALUE_STRING) {
-      String str = jp.getText().trim();
+      String str = jp.getString().trim();
       if (str.length() == 0) {
         return null;
       }
-
       try {
         value = Long.parseLong(str);
       } catch (NumberFormatException e) {
-        throw ctxt.mappingException(handledType());
+        throw new InvalidFormatException(jp,"Cannot deserialize "+ handledType(), str, handledType());
       }
     } else {
-      throw ctxt.mappingException(handledType());
+      throw new InvalidFormatException(jp,"Cannot deserialize "+ handledType(), jp.getString(), handledType());
     }
-
     return Instant.ofEpochSecond(value).atZone(ZoneOffset.UTC);
   }
 }

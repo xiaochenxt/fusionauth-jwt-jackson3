@@ -16,7 +16,7 @@
 
 package io.fusionauth.jwks;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import io.fusionauth.http.AbstractHttpHelper;
 import io.fusionauth.jwks.domain.JSONWebKey;
 import io.fusionauth.jwt.json.Mapper;
@@ -72,7 +72,7 @@ public class JSONWebKeySetHelper extends AbstractHttpHelper {
             throw new JSONWebKeySetException("The well-known endpoint [" + endpoint + "] has not defined a JSON Web Key Set endpoint. Missing the [jwks_uri] property.");
           }
 
-          return retrieveKeysFromJWKS(jwksURI.asText());
+          return retrieveKeysFromJWKS(jwksURI.asString());
         },
         JSONWebKeyBuilderException::new);
   }
